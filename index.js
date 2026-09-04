@@ -388,7 +388,11 @@ async function revealCardsSequentially(ids) {
   }
 
   // Update the output display with the new pulls
-  divOutput.innerHTML = "";
+  // divOutput.innerHTML = "";
+
+  // Instead, insert new rows at the top (or bottom) of the output container:
+    divOutput.insertBefore(deckOutput, divOutput.firstChild);
+
   divOutput.appendChild(deckOutput);
 }
 
@@ -487,6 +491,7 @@ async function scoutForSupport(supportName="Kitasan Black") {
 
     // Update stats after pull
     updateStatsDisplay();
+    updateInventoryDisplay();
 
     // Check if target support pulled (The target is always the SSR version, ID starting with 3)
     for (let id of pulledIds) {
@@ -543,7 +548,8 @@ autoScoutBtn.addEventListener("click", () => {
     }
     
     // Initial setup before starting auto-scout
-    resetDeck();
+    // resetDeck();
+    
     updateStatsDisplay(); // Display initial/reset stats
     divPulled.innerHTML = '<h2>Scout Results</h2><p>Auto scouting...</p>';
     
@@ -569,3 +575,50 @@ document.addEventListener('DOMContentLoaded', () => {
     carats = parseInt(caratsInput.value, 10) || 0;
     updateStatsDisplay();
 });
+
+function addResetButton(){
+    // Add a Reset button listener
+    document.getElementById("resetBtn")?.addEventListener("click", () => {
+        resetDeck();
+        for (let id in cardCount) {
+            cardCount[id] = 0;
+        }
+        divOutput.innerHTML = "<p>Cards pulled will appear here...</p>";
+        updateStatsDisplay();
+        const inventoryDiv = document.getElementById("inventorySummary");
+        if (inventoryDiv) inventoryDiv.innerHTML = "";
+    });
+}
+
+// == Rendering ==
+// render a cumulative inventory view:
+
+function updateInventoryDisplay() {
+  // Create or get an inventory container inside your results panel
+  let inventoryDiv = document.getElementById("inventorySummary");
+  if (!inventoryDiv) {
+    inventoryDiv = document.createElement("div");
+    inventoryDiv.id = "inventorySummary";
+    inventoryDiv.classList.add("uma-panel");
+    divPulled.appendChild(inventoryDiv);
+  }
+
+  // Filter and display cards that have been pulled at least once
+  const pulledCards = Object.entries(cardCount)
+    .filter(([id, count]) => count > 0)
+    .map(([id, count]) => {
+      const card = umaSupportIds[id];
+      return `<li><strong>${card.name}</strong> (${card.title}): ${count}x</li>`;
+    });
+
+  inventoryDiv.innerHTML = `
+    <h3>Card Inventory Summary</h3>
+    <ul>${pulledCards.join("")}</ul>
+  `;
+}
+
+function main(){
+
+}
+
+main();
