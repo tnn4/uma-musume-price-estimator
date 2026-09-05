@@ -65,6 +65,8 @@ input, select {
 }
 
 .col {
+  width: 120px;
+  perspective: 1000px; /* Needed for 3D flip */
   margin: 5px;
 }
 
@@ -136,10 +138,10 @@ input, select {
 
 /* Grid
 
-/* Container for each 10x pull batch */
+/* Container for each 10x pull batch 
 .gacha-pull-row {
   display: grid;
-  /* Creates up to 5 equal columns; wraps automatically on smaller screens */
+  /* Creates up to 5 equal columns; wraps automatically on smaller screens 
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 12px;
   margin-bottom: 20px;
@@ -147,16 +149,16 @@ input, select {
   border-bottom: 2px dashed #ddd;
 }
 
-/* Ensure the card container fills its grid slot properly */
+/* Ensure the card container fills its grid slot properly 
 .uma-card-container {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4; /* Maintains standard card proportions */
+  aspect-ratio: 3 / 4; /* Maintains standard card proportions 
   border-radius: 8px;
   overflow: hidden;
 }
 
-/* Make images fluid inside grid cells */
+/* Make images fluid inside grid cells 
 .uma-card-image {
   width: 100%;
   height: 100%;
@@ -164,7 +166,7 @@ input, select {
   display: block;
 }
 
-/* Position overlay icons neatly within the card cell */
+/* Position overlay icons neatly within the card cell 
 .uma-rarity-icon {
   position: absolute;
   top: 4px;
@@ -177,4 +179,185 @@ input, select {
   top: 4px;
   right: 4px;
   width: 24px;
+}
+*/
+
+/* Main Output Grid */
+.scout-output {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 12px;
+  padding: 10px;
+}
+
+/* Base Card Container */
+.uma-card-item {
+  position: relative;
+  width: 100%;
+}
+
+.uma-card-container {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.uma-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Icons */
+.uma-rarity-icon {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 22px;
+}
+
+.uma-stat-icon {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+}
+
+/* Bottom Right Duplicate Badge */
+.uma-card-count-badge {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+  background-color: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.85rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  border: 1px solid #ffca28;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* SSR Glow Effect */
+.ssr-glow {
+  box-shadow: 0 0 10px #ffd700, 0 0 20px #ffa500;
+  border: 2px solid #ffd700;
+}
+
+
+
+
+
+
+
+/* Name under card
+
+/* Card Item Container inside Grid */
+.uma-card-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  perspective: 1000px; /* 3D context */
+}
+
+/* 3D Flip Wrapper */
+.card-inner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4; /* Maintains card proportions */
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+/* Flips the card when class 'flipped' is toggled */
+.uma-card-item.flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.card-front {
+  transform: rotateY(0deg);
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  background: #ff99cc;
+}
+
+/* Ensure inner image container fills front face */
+.card-front .uma-card-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Label rendered strictly outside the 3D flip box */
+.uma-card-label {
+  margin-top: 8px;
+  width: 100%;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.uma-card-label a {
+  color: #333;
+  text-decoration: none;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.uma-card-label a:hover {
+  color: #ff4081;
+  text-decoration: underline;
+}
+
+
+
+
+
+
+
+
+
+
+.uma-card-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.uma-card-link:hover .uma-card-container {
+  transform: scale(1.03);
+  transition: transform 0.2s ease-in-out;
+}
+
+.uma-card-link:hover .uma-card-label span {
+  color: #ff4081;
+  text-decoration: underline;
 }

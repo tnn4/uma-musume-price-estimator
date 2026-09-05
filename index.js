@@ -325,48 +325,97 @@ const sanitizeValue = (str) => {
 
 // === Card Creation and Display Logic ===
 
-function createAnimatedCard(id) {
+function createCardElement(id, count) {
   const card = document.createElement("div");
-  card.classList.add("col");
+  card.classList.add("uma-card-item");
 
-  const cardInner = document.createElement("div");
-  cardInner.classList.add("card-inner");
-
-  // Card back (Umamusume style back)
-  const cardBack = document.createElement("div");
-  cardBack.classList.add("card-back");
-
-  // Card front (The actual card image and info)
-  const cardFront = document.createElement("div");
-  cardFront.classList.add("card-front");
-
-  const cardName = umaSupportIds[id].name;
+  const cardName = umaSupportIds[id]?.name || "Unknown Card";
   const wikiName = cardName.replace(/ /g, "_").replace(/'/g, "").replace(/é/g, "e");
-  
-  // Use the updated image paths and a clean structure
-  cardFront.innerHTML = `
-    <div class="uma-card-container">
-      <img class="uma-card-image" src="img/uma-support/${id}.png" alt="${cardName}" />
-      <img class="uma-rarity-icon" src="img/utx_txt_rarity_0${getFirstDigit(id)}.png" alt="rarity" />
-      <img class="uma-stat-icon" src="img/utx_ico_obtain_${umaSupportIds[id].stat}.png" alt="stat" />
-      <div class="uma-card-overlay">
-        <h4>${deckHtmlObj[id].count}x
-          <a target="_blank" href="https://umamusu.wiki/${wikiName}">
-            ${cardName}
-          </a>
-        </h4>
+  const rarityDigit = getFirstDigit(id);
+
+  card.innerHTML = `
+    <a class="uma-card-link" target="_blank" rel="noopener noreferrer" href="https://umamusu.wiki/${wikiName}">
+      <div class="uma-card-container ${rarityDigit === 3 ? 'ssr-glow' : ''}">
+        <img class="uma-card-image" src="img/uma-support/${id}.png" alt="${cardName}" />
+        <img class="uma-rarity-icon" src="img/utx_txt_rarity_0${rarityDigit}.png" alt="rarity" />
+        <img class="uma-stat-icon" src="img/utx_ico_obtain_${umaSupportIds[id]?.stat}.png" alt="stat" />
+        <span class="uma-card-count-badge">x${count}</span>
       </div>
+      <div class="uma-card-label">
+        <span>${cardName}</span>
+      </div>
+    </a>
+  `;
+
+  return card;
+}
+
+function createAnimatedCard2(id) {
+  const card = document.createElement("div");
+  card.classList.add("uma-card-item");
+
+  const cardName = umaSupportIds[id]?.name || "Unknown Card";
+  const wikiName = cardName.replace(/ /g, "_").replace(/'/g, "").replace(/é/g, "e");
+  const rarityDigit = getFirstDigit(id);
+  const count = deckHtmlObj[id]?.count || 1;
+
+  card.innerHTML = `
+    <a class="uma-card-link" target="_blank" rel="noopener noreferrer" href="https://umamusu.wiki/${wikiName}">
+    <div class="card-inner">
+      <div class="card-back">
+        <img class="uma-card-image" src="img/card_back.png" alt="Card Back" />
+      </div>
+      <div class="card-front">
+        <div class="uma-card-container ${rarityDigit === 3 ? 'ssr-glow' : ''}">
+          <img class="uma-card-image" src="img/uma-support/${id}.png" alt="${cardName}" />
+          <img class="uma-rarity-icon" src="img/utx_txt_rarity_0${rarityDigit}.png" alt="rarity" />
+          <img class="uma-stat-icon" src="img/utx_ico_obtain_${umaSupportIds[id]?.stat}.png" alt="stat" />
+          <span class="uma-card-count-badge">x${count}</span>
+        </div>
+      </div>
+    </div>
+    <div class="uma-card-label">
+      
+    </div>
+    </a>
+  `;
+
+  return card;
+}
+
+function createAnimatedCardWithLink(id) {
+  const card = document.createElement("div");
+  card.classList.add("uma-card-item");
+  card.style.cursor = "pointer"; // Show pointer on hover
+
+  const cardName = umaSupportIds[id]?.name || "Unknown Card";
+  const wikiName = cardName.replace(/ /g, "_").replace(/'/g, "").replace(/é/g, "e");
+  const rarityDigit = getFirstDigit(id);
+  const count = deckHtmlObj[id]?.count || 1;
+
+  card.innerHTML = `
+    <div class="card-inner">
+      <div class="card-back">
+        <img class="uma-card-image" src="img/card_back.png" alt="Card Back" />
+      </div>
+      <div class="card-front">
+        <div class="uma-card-container ${rarityDigit === 3 ? 'ssr-glow' : ''}">
+          <img class="uma-card-image" src="img/uma-support/${id}.png" alt="${cardName}" />
+          <img class="uma-rarity-icon" src="img/utx_txt_rarity_0${rarityDigit}.png" alt="rarity" />
+          <img class="uma-stat-icon" src="img/utx_ico_obtain_${umaSupportIds[id]?.stat}.png" alt="stat" />
+          <span class="uma-card-count-badge">x${count}</span>
+        </div>
+      </div>
+    </div>
+    <div class="uma-card-label">
+      <span>${cardName}</span>
     </div>
   `;
 
-  // Add SSR glow for visual effect
-  if (getFirstDigit(id) === 3) {
-    cardFront.classList.add("ssr-glow");
-  }
-
-  cardInner.appendChild(cardBack);
-  cardInner.appendChild(cardFront);
-  card.appendChild(cardInner);
+  // Open wiki in a new tab when clicked
+  card.addEventListener("click", () => {
+    window.open(`https://umamusu.wiki/${wikiName}`, "_blank");
+  });
 
   return card;
 }
@@ -376,7 +425,7 @@ async function revealCardsSequentially(ids) {
   deckOutput.classList.add("gacha-pull-row"); // Use a specific class for the flex/grid layout of pulled cards
 
   for (let i = 0; i < ids.length; i++) {
-    const cardElement = createAnimatedCard(ids[i]);
+    const cardElement = createAnimatedCard2(ids[i]);
     deckOutput.appendChild(cardElement);
 
     // Add small delay for sequential reveal (Adjust for speed)
@@ -420,6 +469,8 @@ function resetDeck() {
     }
     divOutput.innerHTML = "";
 }
+
+
 
 function stopAutoScout() {
     if (intervalId !== null) {
@@ -492,6 +543,7 @@ async function scoutForSupport(supportName="Kitasan Black") {
         pulledIds.push(id);
     }
 
+    // RENDERING
     // Animate card reveal
     await revealCardsSequentially(pulledIds);
 
@@ -526,6 +578,10 @@ async function scoutForSupport(supportName="Kitasan Black") {
     }
 }
 
+
+
+
+
 // === Event Listeners and Initialization ===
 
 // Initialize Support Dropdown
@@ -546,8 +602,29 @@ scoutTenBtn.addEventListener("click", () => {
     scoutForSupport(targetSupport);
 });
 
+
+let isScouting = false;
+
+async function runAutoScoutLoop(targetSupport) {
+    if (!isScouting || found) return;
+
+    await scoutForSupport(targetSupport);
+
+    // If still scouting and target not found, schedule the next pull
+    if (isScouting && !found) {
+        setTimeout(() => runAutoScoutLoop(targetSupport), 10);
+    } else {
+        stopAutoScout();
+    }
+}
+
 // Auto Scout Button
 autoScoutBtn.addEventListener("click", () => {
+    if (isScouting){
+        stopAutoScout();
+        return;
+    }
+    
     if (intervalId !== null) {
         stopAutoScout();
         autoScoutBtn.textContent = "Auto Scout Until Found";
@@ -555,15 +632,34 @@ autoScoutBtn.addEventListener("click", () => {
     }
     
     // Initial setup before starting auto-scout
-    // resetDeck();
+    resetDeck();
+
+    // 2. Re-establish the DOM structure in case divPulled was overwritten by success message
+    
+    divPulled.innerHTML = `
+        <h2>Scout Results</h2>
+        <div id="output" class="scout-output"></div>
+    `;
+    // Re-bind the global output element variable
+    divOutput = document.getElementById("output");
     
     updateStatsDisplay(); // Display initial/reset stats
-    divPulled.innerHTML = '<h2>Scout Results</h2><p>Auto scouting...</p>';
+    // divPulled.innerHTML = '<h2>Scout Results</h2><p>Auto scouting...</p>';
     
     const targetSupport = sanitizeValue(supportDropdown.value);
-    autoScoutBtn.textContent = "STOP Auto Scout";
+    autoScoutBtn.textContent = "Auto Scout";
 
-    // Start auto-scout loop
+    // use mode 1 or 2 to test the different auto scout functions
+    let mode = 2;
+    if (mode == 1){
+        isScouting = true;
+        runAutoScoutLoop(targetSupport);
+    }
+    
+    
+
+    if( mode == 2 ){
+            // Start auto-scout loop
     intervalId = setInterval(() => {
         if (found) {
             stopAutoScout();
@@ -575,6 +671,9 @@ autoScoutBtn.addEventListener("click", () => {
             await scoutForSupport(targetSupport);
         })();
     }, 10); // Small delay to simulate pulling and prevent freezing
+    }
+
+    
 });
 
 // Initial state setup
@@ -595,6 +694,36 @@ function addResetButton(){
         const inventoryDiv = document.getElementById("inventorySummary");
         if (inventoryDiv) inventoryDiv.innerHTML = "";
     });
+}
+
+function addResetFunctionality() {
+  document.getElementById("resetBtn")?.addEventListener("click", () => {
+    // 1. Stop any active auto scouting
+    if (typeof stopAutoScout === "function") {
+      stopAutoScout();
+    }
+
+    // 2. Reset numerical deck state and card counts
+    resetDeck();
+
+    // 3. Re-establish clean DOM layout inside #pulled (clears win banners)
+    divPulled.innerHTML = `
+      <h2>Scout Results</h2>
+      <div id="output" class="scout-output">
+        <p>Cards pulled will appear here...</p>
+      </div>
+    `;
+    divOutput = document.getElementById("output");
+
+    // 4. Clear inventory summary if present
+    const inventoryDiv = document.getElementById("inventorySummary");
+    if (inventoryDiv) {
+      inventoryDiv.innerHTML = "";
+    }
+
+    // 5. Update stats display back to zero values
+    updateStatsDisplay();
+  });
 }
 
 // == Rendering ==
@@ -626,6 +755,7 @@ function updateInventoryDisplay() {
 
 // SORTING AND GRID RENDERING LOGIC
 
+/*
 // Creates a single card DOM node with count badge
 function createCardElement(id, count) {
   const card = document.createElement("div");
@@ -645,7 +775,7 @@ function createCardElement(id, count) {
   `;
 
   return card;
-}
+}*/
 
 // Renders the full collection sorted by Rarity (SSR -> SR -> R) then Alphabetical Name
 function renderSortedGrid() {
@@ -677,8 +807,19 @@ function renderSortedGrid() {
   });
 }
 
-function main(){
+async function render(){
+    // RENDERING
+    // Animate card reveal
+    await revealCardsSequentially(pulledIds);
 
+    // Update stats after pull
+    renderSortedGrid();
+    updateStatsDisplay();
+    updateInventoryDisplay();
+}
+
+function main(){
+    addResetFunctionality();
 }
 
 main();
