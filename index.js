@@ -169,9 +169,11 @@ const umaSupportIds = {
   20009: { name: "Mihono Bourbon", stat: "po", title: "Pal-Assisted Training", tier: null, count: 0 },
   20010: { name: "Mejiro Ryan", stat: "po", title: "On and Off the Court", tier: null, count: 0 },
   20011: { name: "Yukino Bijin", stat: "g", title: "City Girl 101", tier: null, count: 0 },
-  20012: { name: "Agnes Tachyon", stat: "w", title: "Experimental Studies on Subject A", tier: null, count: 0 },
+  // 20012: { name: "Agnes Tachyon", stat: "w", title: "Experimental Studies on Subject A", tier: null, count: 0 },
+  20012: { name: "Narita Taishin", stat: "sp", title: "Poolside High Tides", tier: null, count: 0 },
   20013: { name: "Eishin Flash", stat: "sp", title: "5:00 AM - Right on Schedule", tier: null, count: 0 },
-  20014: { name: "Narita Taishin", stat: "sp", title: "Poolside High Tides", tier: null, count: 0 },
+  // 20014: { name: "Narita Taishin", stat: "sp", title: "Poolside High Tides", tier: null, count: 0 },
+  20014: { name: "Agnes Tachyon", stat: "w", title: "Experimental Studies on Subject A", tier: null, count: 0 },
   20015: { name: "Marvelous Sunday", stat: "w", title: "A Marvelous Plan", tier: null, count: 0 },
   20016: { name: "Matikane Fukukitaru", stat: "w", title: "Fate's Forecast", tier: null, count: 0 },
   20017: { name: "Meisho Doto", stat: "g", title: "Fighting for Fortune", tier: null, count: 0 },
@@ -330,6 +332,7 @@ function createCardElement(id, count) {
   card.classList.add("uma-card-item");
 
   const cardName = umaSupportIds[id]?.name || "Unknown Card";
+  const cardTitle = umaSupportIds[id]?.title || "Unknown";
   const wikiName = cardName.replace(/ /g, "_").replace(/'/g, "").replace(/é/g, "e");
   const rarityDigit = getFirstDigit(id);
 
@@ -342,7 +345,7 @@ function createCardElement(id, count) {
         <span class="uma-card-count-badge">x${count}</span>
       </div>
       <div class="uma-card-label">
-        <span>${cardName}</span>
+        <span>${cardName} (${cardTitle})</span>
       </div>
     </a>
   `;
