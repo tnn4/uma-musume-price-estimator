@@ -413,6 +413,12 @@ function resetDeck() {
     carats = parseInt(caratsInput.value, 10) || 0; // Use the value from the input field
     caratsTotal = 0;
     found = false;
+
+    // Reset card counts
+    for (let id in cardCount) {
+        cardCount[id] = 0;
+    }
+    divOutput.innerHTML = "";
 }
 
 function stopAutoScout() {
@@ -490,6 +496,7 @@ async function scoutForSupport(supportName="Kitasan Black") {
     await revealCardsSequentially(pulledIds);
 
     // Update stats after pull
+    renderSortedGrid();
     updateStatsDisplay();
     updateInventoryDisplay();
 
@@ -615,6 +622,59 @@ function updateInventoryDisplay() {
     <h3>Card Inventory Summary</h3>
     <ul>${pulledCards.join("")}</ul>
   `;
+}
+
+// SORTING AND GRID RENDERING LOGIC
+
+// Creates a single card DOM node with count badge
+function createCardElement(id, count) {
+  const card = document.createElement("div");
+  card.classList.add("uma-card-item");
+
+  const cardName = umaSupportIds[id].name;
+  const wikiName = cardName.replace(/ /g, "_").replace(/'/g, "").replace(/é/g, "e");
+  const rarityDigit = getFirstDigit(id);
+
+  card.innerHTML = `
+    <div class="uma-card-container ${rarityDigit === 3 ? 'ssr-glow' : ''}">
+      <img class="uma-card-image" src="img/uma-support/${id}.png" alt="${cardName}" />
+      <img class="uma-rarity-icon" src="img/utx_txt_rarity_0${rarityDigit}.png" alt="rarity" />
+      <img class="uma-stat-icon" src="img/utx_ico_obtain_${umaSupportIds[id].stat}.png" alt="stat" />
+      <span class="uma-card-count-badge">x${count}</span>
+    </div>
+  `;
+
+  return card;
+}
+
+// Renders the full collection sorted by Rarity (SSR -> SR -> R) then Alphabetical Name
+function renderSortedGrid() {
+  divOutput.innerHTML = ""; // Clear existing grid
+
+  // Extract all cards with count > 0
+  const activeCards = Object.keys(cardCount)
+    .filter(id => cardCount[id] > 0)
+    .map(id => Number(id));
+
+  // Sort by Rarity Descending (30000s -> 20000s -> 10000s), then Alphabetically by Name
+  activeCards.sort((a, b) => {
+    const rarityA = getFirstDigit(a);
+    const rarityB = getFirstDigit(b);
+
+    if (rarityA !== rarityB) {
+      return rarityB - rarityA; // Higher rarity first
+    }
+
+    const nameA = umaSupportIds[a].name.toLowerCase();
+    const nameB = umaSupportIds[b].name.toLowerCase();
+    return nameA.localeCompare(nameB); // Alphabetical sort
+  });
+
+  // Append sorted cards to output grid
+  activeCards.forEach(id => {
+    const cardNode = createCardElement(id, cardCount[id]);
+    divOutput.appendChild(cardNode);
+  });
 }
 
 function main(){
