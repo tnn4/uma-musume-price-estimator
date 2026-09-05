@@ -307,7 +307,7 @@ let deckObj = {};
 let deckHtmlObj = {};
 
 let total_money_spent = 0;
-let carats=0;
+let currentCarats=0;
 let caratsTotal=0;
 let found = false;
 let intervalId = null;
@@ -451,7 +451,7 @@ function updateStatsDisplay() {
     totalPullsSpan.textContent = deck.length;
     caratsTotalStatSpan.textContent = caratsTotal;
     moneySpentStatSpan.textContent = total_money_spent.toFixed(2);
-    caratsRemainingStatSpan.textContent = carats;
+    caratsRemainingStatSpan.textContent = currentCarats;
 }
 
 function resetDeck() {
@@ -459,7 +459,7 @@ function resetDeck() {
     deckObj = {};
     deckHtmlObj = {};
     total_money_spent = 0;
-    carats = parseInt(caratsInput.value, 10) || 0; // Use the value from the input field
+    currentCarats = parseInt(caratsInput.value, 10) || 0; // Use the value from the input field
     caratsTotal = 0;
     found = false;
 
@@ -513,12 +513,13 @@ async function scoutForSupport(supportName="Kitasan Black") {
     // --- End Helper Functions ---
 
     // Cost: 1500 Carats per 10x scout
-    if (carats < 1500) {
-        carats += 5000;
+    if (currentCarats < 1500 || currentCarats == 1500) {
+        console.log("Bought more carats");
+        currentCarats += 5000;
         caratsTotal += 5000;
         total_money_spent += 69.99; // Standard cost of biggest Carat pack
     }
-    carats -= 1500;
+    currentCarats -= 1500;
     caratsTotal += 1500;
 
     let pulledIds = [];

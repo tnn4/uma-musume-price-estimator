@@ -20,6 +20,12 @@
       
       <section id="app" class="uma-panel controls-panel">
         <h2>Scout Configuration</h2>
+        This tool gives you the expected price you would pay to pull the chase card you want.
+        Instructions: </br>
+        - Click 10x scout to pull for 10 cards. </br>
+        - Click Auto Scout to automatically scout until you get the target support card (it's pricey) </br>
+        - Click Reset to clear the deck </br>
+        Happy gambling!
         <div class="control-group">
           <label for="caratInput">Starting <img src="img/uma-carat-32x32.png" alt="Carats">:</label>
           <input type="number" id="caratInput" value="15000">
@@ -37,6 +43,15 @@
         </div>
       </section>
 
+      <section id="stats" class="uma-panel stats-panel">
+        <h2>Lifetime Stats</h2>
+        <p>Remaining <img src="img/uma-carat-32x32.png" alt="Carats">: <span id="caratsRemainingStat">0</span></p>
+        <p>Total Pulls: <span id="totalPulls">0</span></p>
+        <p>Total <img src="img/uma-carat-32x32.png" alt="Carats"> Spent: <span id="caratsTotalStat">0</span></p>
+        <p>Total Money Spent: $<span id="moneySpentStat">0.00</span></p>
+        
+      </section>
+
       <section id="pulled" class="uma-panel results-panel">
         <h2>Scout Results</h2>
         <div id="output" class="scout-output">
@@ -44,13 +59,7 @@
         </div>
       </section>
       
-      <section id="stats" class="uma-panel stats-panel">
-        <h2>Lifetime Stats</h2>
-        <p>Total Pulls: <span id="totalPulls">0</span></p>
-        <p>Total <img src="img/uma-carat-32x32.png" alt="Carats"> Spent: <span id="caratsTotalStat">0</span></p>
-        <p>Total Money Spent: $<span id="moneySpentStat">0.00</span></p>
-        <p>Remaining <img src="img/uma-carat-32x32.png" alt="Carats">: <span id="caratsRemainingStat">0</span></p>
-        </section>
+
       
     </main>
 
