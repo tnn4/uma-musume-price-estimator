@@ -561,6 +561,7 @@ async function scoutForSupport(supportName="Kitasan Black") {
             found = true;
             stopAutoScout();
             
+            /*
             // Display a special Umamusume-style success message in the results area
             divPulled.innerHTML = `
                 <div class="uma-success-message">
@@ -573,6 +574,18 @@ async function scoutForSupport(supportName="Kitasan Black") {
             `;
 
             window.alert(`Got ${supportName}! Total money spent: $${total_money_spent.toFixed(2)}`);
+            */
+
+            // Prepend the victory message above the scout results grid
+    const successBannerHTML = `
+        <div class="uma-success-message">
+            <h2>🎉 Congratulations! You got ${supportName}! 🎉</h2>
+            <img class="uma-banner-image" src="img/uma-support/${id}.png" alt="${supportName} acquired">
+            <p>Total Carats Used: <strong>${caratsTotal}</strong> | Total Money Spent: <strong>$${total_money_spent.toFixed(2)}</strong> | Total Pulls: <strong>${deck.length}</strong></p>
+        </div>
+    `;
+    
+    divPulled.insertAdjacentHTML("afterbegin", successBannerHTML);
             return;
         }
     }
@@ -675,6 +688,51 @@ autoScoutBtn.addEventListener("click", () => {
 
     
 });
+
+async function runAutoScoutingLoop2(targetSupport){
+    intervalId = setInterval(() => {
+        if (found) {
+            stopAutoScout();
+            autoScoutBtn.textContent = "Auto Scout Until Found";
+            return;
+        }
+        // Use an IIFE or separate function to call the async scout
+        (async () => {
+            await scoutForSupport(targetSupport);
+        })();
+    }, 10); // Small delay to simulate pulling and prevent freezing
+}
+
+
+function initAutoScoutBtn(){
+    // Auto Scout Button Listener
+autoScoutBtn.addEventListener("click", () => {
+    // 1. Toggle off if already running
+    if (isScouting || intervalId !== null) {
+        stopAutoScout();
+        autoScoutBtn.textContent = "Auto Scout Until Found";
+        return;
+    }
+
+    // 2. Ensure container exists without wiping existing pulls
+    if (!document.getElementById("output")) {
+        divPulled.innerHTML = `
+            <h2>Scout Results</h2>
+            <div id="output" class="scout-output"></div>
+        `;
+        divOutput = document.getElementById("output");
+    }
+
+    // 3. Set state and UI label
+    isScouting = true;
+    autoScoutBtn.textContent = "STOP Auto Scout";
+
+    const targetSupport = sanitizeValue(supportDropdown.value);
+
+    // 4. Run async loop safely (Mode 1 recommended to avoid stacked async intervals)
+    runAutoScoutLoop(targetSupport);
+});
+}
 
 // Initial state setup
 document.addEventListener('DOMContentLoaded', () => {
