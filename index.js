@@ -1731,6 +1731,9 @@ function addResetButton() {
   });
 }
 
+const barChartElement = document.getElementById("barGraph1");
+const barChartOriginalHTML = barChartElement.innerHTML;
+
 function addResetFunctionality() {
   document.getElementById("resetBtn")?.addEventListener("click", () => {
     // 1. Stop any active auto scouting
@@ -1758,6 +1761,9 @@ function addResetFunctionality() {
 
     // 5. Update stats display back to zero values
     updateStatsDisplay();
+
+    // reset bar chart
+    barChartElement.innerHTML = barChartOriginalHTML;
   });
 }
 
