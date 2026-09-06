@@ -653,7 +653,13 @@ const umaSupportIds = {
     tier: null,
     count: 0,
   },
-  // 20012: { name: "Narita Taishin", stat: "sp", title: "Poolside High Tides", tier: null, count: 0 },
+  20012: {
+    name: "Narita Taishin",
+    stat: "sp",
+    title: "Poolside High Tides",
+    tier: null,
+    count: 0,
+  },
   20013: {
     name: "Eishin Flash",
     stat: "sp",
@@ -668,7 +674,6 @@ const umaSupportIds = {
     tier: null,
     count: 0,
   },
-  // 20014: { name: "Agnes Tachyon", stat: "w", title: "Experimental Studies on Subject A", tier: null, count: 0 },
   20015: {
     name: "Marvelous Sunday",
     stat: "w",
@@ -1010,7 +1015,7 @@ const umaSupportIds = {
     count: 0,
   },
   30033: {
-    name: "Winning Tickket",
+    name: "Winning Ticket",
     stat: "po",
     title: "Dreams Do Come True!",
     tier: null,
