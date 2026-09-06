@@ -39,7 +39,7 @@ const getFirstDigit = (num) => {
 // Define DOM elements
 
 const app = document.getElementById("app");
-const supportDropdown = document.getElementById("supportDropdown");
+
 const caratsInput = document.getElementById("caratInput");
 const scoutTenBtn = document.getElementById("scoutTenBtn");
 const autoScoutBtn = document.getElementById("autoScoutBtn");
@@ -48,6 +48,8 @@ const caratsTotalStatSpan = document.getElementById("caratsTotalStat");
 const moneySpentStatSpan = document.getElementById("moneySpentStat");
 const caratsRemainingStatSpan = document.getElementById("caratsRemainingStat");
 const currentPitySpan = document.getElementById("currentPity");
+
+const supportDropdown = document.getElementById("supportDropdown");
 
 // Once you get this you guarantee a pull
 const PITY_POINT_GUARANTEE = 200;
@@ -73,6 +75,37 @@ const capitalizeFirstLetterOfEachWord = (str) => {
 const sanitizeValue = (str) => {
   return capitalizeFirstLetterOfEachWord(str.trim().toLowerCase());
 };
+
+// Drop down menu for rarity
+const rarityDropdown = document.getElementById("rarityDropdown");
+
+// Populate target dropdown based on selected rarity (1 = R, 2 = SR, 3 = SSR)
+function populateSupportDropDown() {
+  const selectedRarityValue = parseInt(rarityDropdown.value, 10); // 3, 2, or 1
+
+  supportDropdown.innerHTML = "";
+
+  for (const id in umaSupportIds) {
+    const numericId = parseInt(id, 10);
+    const firstDigit = getFirstDigit(numericId);
+
+    if (firstDigit === selectedRarityValue) {
+      const card = umaSupportIds[id];
+      const cardName = typeof card === "string" ? card : card.name;
+
+      const option = document.createElement("option");
+      option.value = cardName;
+      option.textContent = cardName;
+      supportDropdown.appendChild(option);
+    }
+  }
+}
+
+// Re-populate card dropdown whenever rarity selection changes
+rarityDropdown.addEventListener("change", populateSupportDropDown);
+
+// Call on app initialization
+populateSupportDropDown();
 
 // === Card Creation and Display Logic ===
 
@@ -266,13 +299,13 @@ function getIdFromSupportDropdownInput(name) {
   return null;
 }
 
-function getIdByName(objList, targetName) {
+function getIdByName(objList, targetName, targetRarity) {
   for (const id in objList) {
-    if (objList[id].name === targetName && getFirstDigit(id) === 3) {
-      return id; // Returns immediately when found
+    if (objList[id].name === targetName && getFirstDigit(id) === targetRarity) {
+      return id; // Returns immediately when matched
     }
   }
-  return null; // Returns null if no match is found
+  return null;
 }
 
 const copyCountInput = document.getElementById("copyCountInput");
@@ -283,6 +316,8 @@ let mlbNotice = "";
 async function scoutForSupport(supportName = "Kitasan Black") {
   if (found) return;
 
+  //  Get currently selected rarity from the dropdown (1, 2, or 3)
+  const selectedRarity = parseInt(rarityDropdown.value, 10) || 3;
   // --- Helper Functions (nested to keep scope clean) ---
   const pullSupport = (rarity = "R") => {
     let minId, maxId;
@@ -359,10 +394,14 @@ async function scoutForSupport(supportName = "Kitasan Black") {
     parseInt(copyCountInput.value, 10) || 1,
   );
   console.log(
-    `Required copies: ${cardCount[getIdByName(umaSupportIds, supportDropdown.value)]}/${targetCopiesRequired} `,
+    `Required copies: ${cardCount[getIdByName(umaSupportIds, supportDropdown.value, selectedRarity)]}/${targetCopiesRequired} `,
   );
 
-  let targetId = getIdByName(umaSupportIds, supportDropdown.value);
+  let targetId = getIdByName(
+    umaSupportIds,
+    supportDropdown.value,
+    selectedRarity,
+  );
 
   // if pity is reached just give them the card they want
 
@@ -372,7 +411,7 @@ async function scoutForSupport(supportName = "Kitasan Black") {
     addToDeck(targetId);
     console.log(`PITIED: Claimed 1x copy of ${supportName}`);
   }
-  targetCopiesOwnd = cardCount[targetId];
+  targetCopiesOwnd = targetId ? cardCount[targetId] : 0;
   // RENDERING
   await renderStats(pulledIds);
   updateCardChart(); // Synchronizes chart bars after every 10-pull batch
@@ -381,9 +420,10 @@ async function scoutForSupport(supportName = "Kitasan Black") {
   // Check if target support pulled (The target is always the SSR version, ID starting with 3)
   for (let id of pulledIds) {
     if (
-      getFirstDigit(id) === 3 &&
-      cardCount[getIdByName(umaSupportIds, supportDropdown.value)] >=
-        targetCopiesRequired
+      getFirstDigit(id) === selectedRarity &&
+      cardCount[
+        getIdByName(umaSupportIds, supportDropdown.value, selectedRarity)
+      ] >= targetCopiesRequired
     ) {
       found = true;
       stopAutoScout();
@@ -391,7 +431,7 @@ async function scoutForSupport(supportName = "Kitasan Black") {
       // Check if a success banner is already present in the DOM
       existingBanner = divPulled.querySelector(".uma-success-message");
 
-      if (targetCopiesRequired == 6) {
+      if (targetCopiesRequired >= 6) {
         mlbNotice = " for Max Limit Break";
       }
 
@@ -433,6 +473,7 @@ async function renderStats(pulledIds) {
 // === Event Listeners and Initialization ===
 
 // Initialize Support Dropdown
+/*
 supportNameList.forEach((supportName) => {
   const option = document.createElement("option");
   option.value = supportName;
@@ -442,6 +483,7 @@ supportNameList.forEach((supportName) => {
   }
   supportDropdown.appendChild(option);
 });
+*/
 
 // Scout 10 Button
 scoutTenBtn.addEventListener("click", () => {
