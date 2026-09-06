@@ -1899,6 +1899,96 @@ async function render() {
   updateInventoryDisplay();
 }
 
+// FILE EXPORT FUNCTIONS
+
+// Helper to generate and trigger a file download from text content
+function downloadFile(content, fileName, mimeType) {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+
+  a.href = url;
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+
+  // Cleanup object URL from memory
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// 1. Export as JSON
+function exportInventoryJSON() {
+  const inventoryData = {
+    exportedAt: new Date().toISOString(),
+    stats: {
+      totalPulls: deck.length,
+      caratsUsed: caratsTotal,
+      moneySpent: total_money_spent,
+    },
+    inventory: Object.entries(cardCount)
+      .filter(([_, count]) => count > 0)
+      .map(([id, count]) => {
+        const numericId = parseInt(id, 10);
+        const rarityDigit = getFirstDigit(numericId);
+        return {
+          id: numericId,
+          name: umaSupportIds[id] || "Unknown Card",
+          rarity: rarityDigit === 3 ? "SSR" : rarityDigit === 2 ? "SR" : "R",
+          count: count,
+        };
+      }),
+  };
+
+  const jsonString = JSON.stringify(inventoryData, null, 2);
+  downloadFile(jsonString, "uma_card_inventory.json", "application/json");
+}
+
+// 2. Export as CSV
+function exportInventoryCSV() {
+  const rows = [["Card ID", "Card Name", "Rarity", "Amount Pulled"]];
+
+  Object.entries(cardCount)
+    .filter(([_, count]) => count > 0)
+    .forEach(([id, count]) => {
+      const numericId = parseInt(id, 10);
+      const rarityDigit = getFirstDigit(numericId);
+      const rarity = rarityDigit === 3 ? "SSR" : rarityDigit === 2 ? "SR" : "R";
+
+      //
+      // const rawName = umaSupportIds[id] || "Unknown Card";
+      /*
+      const rawName = umaSupportIds[id];
+      const nameString =
+        typeof rawName === "string"
+          ? rawName
+          : rawName?.name || String(rawName || "Unknown Card");
+      */
+      // 1. Safe extraction of string representation
+      let rawVal = umaSupportIds[id] ?? umaSupportIds[numericId];
+      let nameString = "Unknown Card";
+
+      if (typeof rawVal === "string") {
+        nameString = rawVal;
+      } else if (rawVal && typeof rawVal === "object") {
+        // If umaSupportIds holds objects like { name: "..." } or arrays
+        nameString = rawVal.name || rawVal.title || JSON.stringify(rawVal);
+      }
+
+      // Escape double quotes inside names to prevent CSV corruption
+      // const safeName = `"${rawName.replace(/"/g, '""')}"`;
+
+      const safeName = `"${String(nameString).replace(/"/g, '""')}"`;
+
+      rows.push([id, safeName, rarity, count]);
+    });
+
+  const csvContent = rows.map((row) => row.join(",")).join("\n");
+  downloadFile(csvContent, "uma_card_inventory.csv", "text/csv;charset=utf-8;");
+}
+
+// END FILE EXPORT FUNCTIONS
+
 function main() {
   addResetFunctionality();
 }

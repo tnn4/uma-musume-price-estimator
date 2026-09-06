@@ -61,6 +61,11 @@
       <div id="chartBarsContainer" class="chart-bars-container"></div>
       </div>
 
+      <div class="export-controls" style="margin: 16px 0; display: flex; gap: 8px;">
+        <button id="exportCsvBtn" onclick="exportInventoryCSV()">Export CSV</button>
+        <button id="exportJsonBtn" onclick="exportInventoryJSON()">Export JSON</button>
+      </div>
+      
       <section id="pulled" class="uma-panel results-panel">
         <h2>Scout Results</h2>
         <div id="output" class="scout-output">
