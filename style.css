@@ -1,6 +1,6 @@
 /* Body & header */
 body {
-  font-family: 'Verdana', sans-serif;
+  font-family: "Verdana", sans-serif;
   background: linear-gradient(to bottom, #ffe6f2, #fff0f7);
   color: #333;
   text-align: center;
@@ -25,7 +25,7 @@ body {
   max-width: 800px;
   background: #fff0f7;
   border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* Buttons */
@@ -39,7 +39,9 @@ button {
   font-weight: bold;
   cursor: pointer;
   margin: 10px 5px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 button:hover {
@@ -48,7 +50,8 @@ button:hover {
 }
 
 /* Input & select styling */
-input, select {
+input,
+select {
   padding: 8px;
   margin: 5px;
   border-radius: 10px;
@@ -77,7 +80,7 @@ input, select {
   height: 180px;
   border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
   background: #fff;
   transition: transform 0.3s;
   animation: fadeIn 0.5s ease-in-out;
@@ -94,14 +97,21 @@ input, select {
   display: block;
 }
 
-.parent img.image2, .parent img.image3 {
+.parent img.image2,
+.parent img.image3 {
   position: absolute;
   width: 32px;
   height: 32px;
 }
 
-.image2 { top: 5px; left: 5px; }
-.image3 { bottom: 5px; right: 5px; }
+.image2 {
+  top: 5px;
+  left: 5px;
+}
+.image3 {
+  bottom: 5px;
+  right: 5px;
+}
 
 .parentcontent {
   position: absolute;
@@ -119,22 +129,30 @@ input, select {
   padding: 10px;
   border-radius: 15px;
   background: linear-gradient(to right, #ffccff, #ff99cc);
-  box-shadow: 0 5px 15px rgba(255,102,178,0.3);
+  box-shadow: 0 5px 15px rgba(255, 102, 178, 0.3);
   animation: glow 1s infinite alternate;
 }
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.8); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes glow {
-  from { box-shadow: 0 0 5px rgba(255,102,178,0.6); }
-  to { box-shadow: 0 0 20px rgba(255,102,178,1); }
+  from {
+    box-shadow: 0 0 5px rgba(255, 102, 178, 0.6);
+  }
+  to {
+    box-shadow: 0 0 20px rgba(255, 102, 178, 1);
+  }
 }
-
-
 
 /* Grid
 
@@ -239,22 +257,18 @@ input, select {
   padding: 2px 6px;
   border-radius: 10px;
   border: 1px solid #ffca28;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   z-index: 2;
   pointer-events: none;
 }
 
 /* SSR Glow Effect */
 .ssr-glow {
-  box-shadow: 0 0 10px #ffd700, 0 0 20px #ffa500;
+  box-shadow:
+    0 0 10px #ffd700,
+    0 0 20px #ffa500;
   border: 2px solid #ffd700;
 }
-
-
-
-
-
-
 
 /* Name under card
 
@@ -281,7 +295,8 @@ input, select {
   transform: rotateY(180deg);
 }
 
-.card-front, .card-back {
+.card-front,
+.card-back {
   position: absolute;
   top: 0;
   left: 0;
@@ -333,15 +348,6 @@ input, select {
   text-decoration: underline;
 }
 
-
-
-
-
-
-
-
-
-
 .uma-card-link {
   display: flex;
   flex-direction: column;
@@ -360,4 +366,77 @@ input, select {
 .uma-card-link:hover .uma-card-label span {
   color: #ff4081;
   text-decoration: underline;
+}
+
+/* BAR GRAPH */
+
+.card-distribution-chart {
+  margin: 20px 0;
+  padding: 16px;
+  background: #1e1e24;
+  color: #fff;
+  border-radius: 8px;
+}
+
+.chart-bars-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  height: 220px;
+  padding-top: 30px; /* Leave space for count numbers above bars */
+  overflow-x: auto;
+  border-bottom: 2px solid #444;
+}
+
+.chart-bar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 48px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.chart-bar-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+}
+
+.chart-bar-count {
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.chart-bar {
+  width: 70%;
+  max-width: 32px;
+  background: linear-gradient(180deg, #4facfe 0%, #00f2fe 100%);
+  border-radius: 4px 4px 0 0;
+  transition: height 0.2s ease-in-out;
+}
+
+/* Color coding by rarity (optional) */
+.chart-bar.ssr {
+  background: linear-gradient(180deg, #ff9a9e 0%, #fecfef 99%);
+}
+.chart-bar.sr {
+  background: linear-gradient(180deg, #a1c4fd 0%, #c2e9fb 100%);
+}
+.chart-bar.r {
+  background: linear-gradient(180deg, #84fab0 0%, #8fd3f4 100%);
+}
+
+.chart-card-image {
+  width: 40px;
+  height: 52px;
+  object-fit: cover;
+  margin-top: 8px;
+  border-radius: 4px;
+  border: 1px solid #555;
 }

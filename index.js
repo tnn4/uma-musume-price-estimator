@@ -1521,7 +1521,9 @@ async function scoutForSupport(supportName = "Kitasan Black") {
     console.log(`PITIED: Claimed 1x copy of ${supportName}`);
   }
   targetCopiesOwnd = cardCount[targetId];
+  // RENDERING
   await renderStats(pulledIds);
+  updateCardChart(); // Synchronizes chart bars after every 10-pull batch
 
   let existingBanner = divPulled.querySelector(".uma-success-message");
   // Check if target support pulled (The target is always the SSR version, ID starting with 3)
@@ -1838,6 +1840,46 @@ function renderSortedGrid() {
     const cardNode = createCardElement(id, cardCount[id]);
     divOutput.appendChild(cardNode);
   });
+}
+
+/* RENDER BAR CHART */
+function updateCardChart() {
+  const container = document.getElementById("chartBarsContainer");
+  if (!container) return;
+
+  // Gather all pulled cards (count > 0)
+  const pulledEntries = Object.entries(cardCount).filter(
+    ([id, count]) => count > 0,
+  );
+  if (pulledEntries.length === 0) return;
+
+  // Find max count to scale bar heights relative to highest pulled card
+  const maxPullCount = Math.max(...pulledEntries.map(([_, count]) => count));
+
+  container.innerHTML = pulledEntries
+    .map(([id, count]) => {
+      // Scale height between 2% and 100%
+      const heightPercent = Math.max(
+        2,
+        Math.round((count / maxPullCount) * 100),
+      );
+
+      // Determine rarity class based on ID prefix
+      const firstDigit = getFirstDigit(parseInt(id, 10));
+      const rarityClass =
+        firstDigit === 3 ? "ssr" : firstDigit === 2 ? "sr" : "r";
+
+      return `
+        <div class="chart-bar-group">
+          <div class="chart-bar-wrapper">
+            <span class="chart-bar-count">${count}</span>
+            <div class="chart-bar ${rarityClass}" style="height: ${heightPercent}%;"></div>
+          </div>
+          <img class="chart-card-image" src="img/uma-support/${id}.png" alt="Card ${id}" title="ID: ${id}">
+        </div>
+      `;
+    })
+    .join("");
 }
 
 async function render() {
