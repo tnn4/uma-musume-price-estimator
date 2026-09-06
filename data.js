@@ -653,13 +653,6 @@ const umaSupportIds = {
     tier: null,
     count: 0,
   },
-  20012: {
-    name: "Narita Taishin",
-    stat: "sp",
-    title: "Poolside High Tides",
-    tier: null,
-    count: 0,
-  },
   20013: {
     name: "Eishin Flash",
     stat: "sp",
